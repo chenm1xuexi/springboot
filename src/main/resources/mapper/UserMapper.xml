@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bibi.springboot.model.User">
+    <resultMap id="userMap" type="User">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="create_time" property="createTime" />
+        <result column="last_modified_time" property="lastModifiedTime" />
+        <result column="is_deleted" property="isDeleted" typeHandler="com.bibi.springboot.common.typeHandler.UserEnumOrdinalTypeHandler"/>
+        <result column="status" property="status" typeHandler="com.bibi.springboot.common.typeHandler.UserStatusEnumTypeHandler"/>
+
+    </resultMap>
+    <sql id="userSql">
+        <![CDATA[
+            SELECT user_id, user_name, password, create_time, last_modified_time, is_deleted, status FROM user
+        ]]>
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="userMap">
+        <include refid="userSql" />
+        <![CDATA[
+            WHERE user_id = #{userId}
+        ]]>
+    </select>
+
+    <insert id="create" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        <![CDATA[
+            INSERT INTO user(user_name, password, create_time, last_modified_time, is_deleted, status)
+            VALUES(#{userName}, #{password}, #{createTime}, #{lastModifiedTime},
+            #{isDeleted, typeHandler = com.bibi.springboot.common.typeHandler.UserEnumOrdinalTypeHandler},
+            #{status, typeHandler = com.bibi.springboot.common.typeHandler.UserStatusEnumTypeHandler})
+        ]]>
+    </insert>
+
+</mapper>
